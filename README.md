@@ -3,9 +3,11 @@
 An experimental native F1 TV client for **Fire TV Stick 4K Max 1st Gen (2021)**,
 model AFTKA, running Fire OS 7 / Android 9.
 
-[Download the APK](https://github.com/rafarlp/apex-tv/releases/download/v0.2.0/ApexTV-firetv-0.2.0.apk)
-or open the [preview release](https://github.com/rafarlp/apex-tv/releases/tag/v0.2.0)
-for source and checksums.
+[Download the APK](https://github.com/rafarlp/apex-tv/releases/download/v0.1.0/ApexTV-firetv-0.1.0.apk)
+or enter **3638576** in Downloader. Keep the same code for preview updates.
+The legacy APK filename stays fixed; the version inside is currently **0.2.0**.
+See the [rolling preview](https://github.com/rafarlp/apex-tv/releases/tag/v0.1.0)
+for current source/checksums, or the [versioned release history](https://github.com/rafarlp/apex-tv/releases).
 
 ## What it does
 

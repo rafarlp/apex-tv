@@ -10,6 +10,12 @@ not a binary port of its Swift/AVFoundation code. See [NOTICE.md](NOTICE.md).
 
 ## First test
 
+**Downloader code: 3638576.** Re-enter the same code for future preview updates.
+Its permanent APK URL retains the legacy `ApexTV-firetv-0.1.0.apk` filename;
+the version inside is updated (currently 0.2.0). Install over the existing app.
+The [rolling preview](https://github.com/rafarlp/apex-tv/releases/tag/v0.1.0)
+lists the actual current version and matching source/checksums.
+
 1. Enable **ADB debugging** under Settings → My Fire TV → Developer Options.
    If Developer Options is hidden, select the device name under About seven times.
 2. Read the local IP under **About → Network**. Keep Mac and Fire Stick on the
