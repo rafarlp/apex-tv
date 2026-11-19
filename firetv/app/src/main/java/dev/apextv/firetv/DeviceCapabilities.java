@@ -23,6 +23,11 @@ final class DeviceCapabilities {
             Display.Mode mode = display.getMode();
             info.append("Output: ").append(mode.getPhysicalWidth()).append('×').append(mode.getPhysicalHeight()).append(" @ ").append(Math.round(mode.getRefreshRate())).append(" Hz\n");
             info.append("HDR types: ").append(Arrays.toString(display.getHdrCapabilities().getSupportedHdrTypes())).append(" (2=HDR10, 3=HLG)\n");
+            java.util.LinkedHashSet<String> modes = new java.util.LinkedHashSet<>();
+            for (Display.Mode supported : display.getSupportedModes()) {
+                modes.add(String.format(java.util.Locale.US, "%d×%d @ %.2f Hz", supported.getPhysicalWidth(), supported.getPhysicalHeight(), supported.getRefreshRate()));
+            }
+            info.append("Available output modes:\n").append(String.join("\n", modes)).append('\n');
         }
         info.append("\nHEVC decoders reporting 3840×2160 @ 50fps:\n");
         int count = 0;
@@ -53,6 +58,34 @@ final class DeviceCapabilities {
         if (selected != null) {
             var params = activity.getWindow().getAttributes(); params.preferredDisplayModeId = selected.getModeId(); activity.getWindow().setAttributes(params);
         }
+    }
+    static void matchFrameRate(Activity activity, int sourceWidth, int sourceHeight, float fps) {
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        if (display == null) return;
+        Display.Mode current = display.getMode();
+        int minimumWidth = Math.max(sourceWidth, current.getPhysicalWidth());
+        int minimumHeight = Math.max(sourceHeight, current.getPhysicalHeight());
+        Display.Mode[] modes = display.getSupportedModes();
+        int[] widths = new int[modes.length], heights = new int[modes.length];
+        float[] rates = new float[modes.length];
+        for (int i = 0; i < modes.length; i++) {
+            widths[i] = modes[i].getPhysicalWidth(); heights[i] = modes[i].getPhysicalHeight(); rates[i] = modes[i].getRefreshRate();
+        }
+        int index = FrameRatePolicy.choose(widths, heights, rates, minimumWidth, minimumHeight, fps);
+        if (index >= 0 && modes[index].getModeId() != current.getModeId()) {
+            var params = activity.getWindow().getAttributes();
+            if (params.preferredDisplayModeId != modes[index].getModeId()) {
+                params.preferredDisplayModeId = modes[index].getModeId();
+                activity.getWindow().setAttributes(params);
+            }
+        }
+    }
+    static String outputSummary(Activity activity, float videoFps) {
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        if (display == null) return "HDMI output: unknown";
+        Display.Mode mode = display.getMode();
+        String cadence = videoFps <= 0 ? "" : FrameRatePolicy.matches(mode.getRefreshRate(), videoFps) ? " · cadence matched" : " · uneven cadence";
+        return String.format(java.util.Locale.US, "HDMI: %d×%d @ %.2f Hz%s", mode.getPhysicalWidth(), mode.getPhysicalHeight(), mode.getRefreshRate(), cadence);
     }
     private DeviceCapabilities() {}
 }

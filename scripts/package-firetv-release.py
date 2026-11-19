@@ -4,9 +4,10 @@ from pathlib import Path
 import hashlib
 import shutil
 import zipfile
+import re
 
 root = Path(__file__).resolve().parent.parent
-version = "0.1.0"
+version = re.search(r"versionName\s+'([^']+)'", (root / "firetv/app/build.gradle").read_text()).group(1)
 destination = root / "build" / "firetv-release" / version
 destination.mkdir(parents=True, exist_ok=True)
 apk = destination / f"ApexTV-firetv-{version}.apk"
@@ -18,7 +19,7 @@ source_files = [
     "firetv/.gitignore", "firetv/gradlew", "firetv/gradlew.bat",
     "firetv/gradle/wrapper/gradle-wrapper.jar",
     "firetv/gradle/wrapper/gradle-wrapper.properties", "firetv/app/build.gradle",
-    "firetv/LICENSE", "firetv/NOTICE.md", "firetv/README.md",
+    "firetv/LICENSE", "firetv/NOTICE.md", "firetv/README.md", "firetv/RELEASE.md",
     "scripts/build-firetv.sh", "scripts/install-firetv.sh", "scripts/setup-firetv-sdk.sh",
     "scripts/package-firetv-release.py",
 ]
@@ -39,24 +40,7 @@ with (destination / "SHA256SUMS").open("w") as checksums:
     for path in [apk, source_archive]:
         checksums.write(f"{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.name}\n")
 
-(destination / "RELEASE.md").write_text("""# Apex TV 0.1.0 — Fire TV preview
-
-Experimental native F1 TV client for Fire TV Stick 4K Max 1st Gen (AFTKA / Fire OS 7).
-
-- Remote navigation, catalog browsing, and main-feed/onboard selection.
-- F1 account pairing by QR code; encrypted local token storage.
-- TV UHD/HDR playback requests using native Media3 and Widevine.
-- On-screen resolution, decoder, source range, and rendered-frame statistics.
-
-Requires your own F1 TV subscription, with Premium for 4K. Physical Fire Stick
-installation, authenticated playback, live 4K, and HDR output have not yet been
-verified. This is an experimental test build, not a promise of 4K compatibility.
-
-Download the APK to install. The source archive includes the application sources,
-Gradle wrapper, licenses, and build instructions. SHA256SUMS identifies both files.
-
-Not affiliated with Formula 1, Amazon, or Vroom TV.
-""")
+shutil.copy2(root / "firetv/RELEASE.md", destination / "RELEASE.md")
 with zipfile.ZipFile(source_archive) as archive:
     assert archive.testzip() is None
     assert not any("/.build/" in name or name.endswith(".keystore") or name.endswith("local.properties") for name in archive.namelist())

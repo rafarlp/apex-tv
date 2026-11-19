@@ -6,8 +6,8 @@
         app:surface_type="surface_view" app:use_controller="true" app:show_timeout="4000"
         app:show_buffering="when_playing" app:resize_mode="fit" />
     <TextView android:id="@+id/stats" android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:layout_gravity="top|start" android:layout_margin="20dp" android:padding="10dp"
-        android:background="#D9101115" android:textColor="#FFFFFF" android:textSize="13sp"
+        android:layout_gravity="top|start" android:layout_margin="20dp" android:layout_marginTop="80dp" android:padding="10dp"
+        android:maxWidth="720dp" android:background="#D9101115" android:textColor="#FFFFFF" android:textSize="11sp"
         android:fontFamily="monospace" android:importantForAccessibility="yes" />
     <LinearLayout android:id="@+id/actions" android:orientation="horizontal"
         android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="top|end"

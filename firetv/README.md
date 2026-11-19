@@ -50,9 +50,32 @@ applied. A replay test does not establish live compatibility.
 
 **Menu** opens the top playback buttons. **Tracks** selects video quality, audio,
 or subtitles; **Route** retries with UHD HLS, TV automatic, or HD compatibility;
-**Live** returns to the live edge; **Stats** toggles the overlay. Normal media
+**Live** returns to the live edge; **Pin stats** keeps the overlay visible after
+the controls hide. Hidden statistics do not redraw. **Playback** configures
+frame-rate matching and optional tunneled audio/video. Normal media
 buttons and D-pad player controls remain available. Back hides controls first,
 then returns to browsing.
+
+## Video stutter
+
+F1 TV's 50 fps broadcast is expected. For even cadence, the HDMI output should be
+50 Hz (or a multiple such as 100 Hz). A TV advertised as 60 Hz may also accept a
+50 Hz HDMI input; inspect **Device → Available output modes** or the current HDMI
+line in playback stats. If no compatible UHD cadence exists, the app retains UHD
+and reports the uneven cadence instead of silently reducing output resolution.
+
+The overlay now shows recent renderer throughput/drop fraction, buffer length,
+and buffering events. Renderer drops, source frame rate, and HDMI cadence are
+distinct measurements. An uneven HDMI cadence may cause judder even without
+renderer drops. The stats cannot measure the TV's internal panel processing.
+
+First let playback controls/stats hide. If video still stutters while audio stays
+smooth, try **Playback → Tunneled audio/video** and compare the same replay segment.
+This option restarts playback at the current replay position; it is off by default
+because platform/codec support differs. Its label says requested rather than
+claiming the hardware actually entered tunneling. Disable it if picture or audio
+gets worse. Automatic quality is adaptive; manually choose 2160p for a fixed-UHD
+comparison if needed.
 
 ## Build
 
@@ -72,8 +95,10 @@ app data. Do not publish the keystore or account tokens.
 
 ## Limits and next evidence
 
-- This is an experimental first build. Authenticating and playing on AFTKA must
-  be tested on the physical device. A successful build does not establish 4K.
+- A first AFTKA device test reports successful pairing and replay playback. Its
+  photo shows 3840×2160, HEVC at 50 fps / 15.4 Mb/s, HLG source signaling, and the
+  secure MediaTek hardware decoder. Some dropped video frames are reported.
+  These findings do not establish accurate panel HDR output or live playback.
 - A returned 2160p manifest is separate from a usable Widevine license, secure
   HEVC decoding, and correct HLG presentation. Device identification alone may
   not resolve all three.
@@ -97,5 +122,10 @@ account tokens, signed URLs, or pairing codes.
 - The public F1 catalog responded successfully. Device authorization returned
   HTTP 200, `https://f1.com/pair`, a 600-second lifetime and a 5-second poll
   interval. No account was signed in during that check; codes were not retained.
-- Physical Fire Stick installation, remote interaction, authenticated playback,
-  decoded 4K, HDR output and live playback remain unverified.
+- A subsequent user device test reports installation, account pairing, responsive
+  remote interaction and UHD replay playback. Its photo shows renderer telemetry,
+  not an independent panel HDR measurement. Live playback remains unverified.
+
+Version 0.2.0 builds and passes 17 JVM tests, Android lint, and APK signature
+verification. Its timing, overlay, adaptive-selection and tunneling changes still
+need a physical AFTKA comparison. See [RELEASE.md](RELEASE.md).
