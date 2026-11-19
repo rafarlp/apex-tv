@@ -1,0 +1,47 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'dev.apextv.firetv'
+    compileSdk 36
+    defaultConfig {
+        applicationId 'dev.apextv.firetv'
+        minSdk 28
+        targetSdk 36
+        versionCode 1
+        versionName '0.1.0'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+        coreLibraryDesugaringEnabled true
+    }
+    buildTypes {
+        release {
+            // Local sideload build: retain the same project-local signing key for updates.
+            signingConfig signingConfigs.debug
+            minifyEnabled false
+        }
+    }
+    signingConfigs {
+        debug {
+            storeFile rootProject.file('../.build/apex-tv.keystore')
+            storePassword 'android'
+            keyAlias 'apextv'
+            keyPassword 'android'
+        }
+    }
+    testOptions { unitTests.returnDefaultValues = true }
+    lint { abortOnError true }
+}
+
+dependencies {
+    implementation 'androidx.activity:activity:1.10.1'
+    implementation 'androidx.media3:media3-exoplayer:1.10.1'
+    implementation 'androidx.media3:media3-exoplayer-dash:1.10.1'
+    implementation 'androidx.media3:media3-exoplayer-hls:1.10.1'
+    implementation 'androidx.media3:media3-ui:1.10.1'
+    implementation 'com.google.zxing:core:3.5.3'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.json:json:20250517'
+}
